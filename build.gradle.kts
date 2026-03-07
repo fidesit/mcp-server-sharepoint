@@ -1,6 +1,11 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     kotlin("jvm") version "2.1.20"
     id("com.gradleup.shadow") version "9.0.0-beta12"
+    id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
 group = "com.utisha"
@@ -69,7 +74,8 @@ tasks.register<Test>("integrationTest") {
     shouldRunAfter(tasks.named("test"))
 }
 
-// Build a runnable fat JAR
+// ── Fat JAR (for direct use: java -jar) ─────────────────────────────────
+
 tasks.shadowJar {
     archiveBaseName.set("mcp-server-sharepoint")
     archiveClassifier.set("")
@@ -83,4 +89,44 @@ tasks.shadowJar {
 // Make 'build' produce the shadow JAR
 tasks.named("build") {
     dependsOn(tasks.shadowJar)
+}
+
+// ── Maven Central Publishing ─────────────────────────────────────────────
+
+mavenPublishing {
+    configure(KotlinJvm(javadocJar = JavadocJar.Empty()))
+
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    signAllPublications()
+
+    coordinates(group.toString(), "mcp-server-sharepoint", version.toString())
+
+    pom {
+        name.set("mcp-server-sharepoint")
+        description.set("A Model Context Protocol (MCP) server for Microsoft SharePoint. Browse sites, manage documents, and search files through AI assistants.")
+        inceptionYear.set("2026")
+        url.set("https://github.com/fidesit/mcp-server-sharepoint")
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("fidesit")
+                name.set("Fides IT")
+                url.set("https://github.com/fidesit")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/fidesit/mcp-server-sharepoint")
+            connection.set("scm:git:git://github.com/fidesit/mcp-server-sharepoint.git")
+            developerConnection.set("scm:git:ssh://git@github.com/fidesit/mcp-server-sharepoint.git")
+        }
+    }
 }
