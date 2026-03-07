@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!--
+    MCP servers communicate over stdio, so application logs MUST go to stderr.
+    Any stdout output would corrupt the MCP JSON-RPC stream.
+  -->
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Suppress noisy Azure/MSAL token acquisition logs -->
+  <logger name="com.azure" level="WARN" />
+  <logger name="com.microsoft.aad" level="WARN" />
+  <logger name="io.netty" level="WARN" />
+  <logger name="reactor" level="WARN" />
+
+  <root level="INFO">
+    <appender-ref ref="STDERR" />
+  </root>
+</configuration>
