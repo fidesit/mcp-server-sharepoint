@@ -1,11 +1,10 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
-import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
-    kotlin("jvm") version "2.1.20"
+    kotlin("jvm") version "2.2.0"
     id("com.gradleup.shadow") version "9.0.0-beta12"
-    id("com.vanniktech.maven.publish") version "0.30.0"
+    id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 group = "com.utisha"
@@ -96,7 +95,7 @@ tasks.named("build") {
 mavenPublishing {
     configure(KotlinJvm(javadocJar = JavadocJar.Empty()))
 
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    publishToMavenCentral(automaticRelease = true)
     signAllPublications()
 
     coordinates(group.toString(), "mcp-server-sharepoint", version.toString())
